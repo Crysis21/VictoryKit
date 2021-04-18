@@ -21,17 +21,18 @@ class RotatingAngularView @JvmOverloads constructor(
     var numberOfStripes = 24
     var drawRadius = 0.0F
     var animationDuration = 1000
-    val drawAngle: Double
-    get() {
-        return 2 * PI / numberOfStripes
-    }
-
+    var autoplay: Boolean = true
     var animationOffsetAngle = 0.0f
+    var drawColor = Color.CYAN
+    var yOffset = 0.3F
 
-    var centerYOffset = 0.3F
     private var center = PointF()
+    private val drawAngle: Double
+        get() {
+            return 2 * PI / numberOfStripes
+        }
 
-    val stripePaint = Paint().apply {
+    private val stripePaint = Paint().apply {
         this.style = Paint.Style.FILL
         this.isAntiAlias = true
         this.color = Color.WHITE
@@ -40,16 +41,24 @@ class RotatingAngularView @JvmOverloads constructor(
     init {
         val array = context.obtainStyledAttributes(attrs, R.styleable.RotatingAngularView, 0, 0)
         numberOfStripes = array.getInt(R.styleable.RotatingAngularView_stripesCount, 24)
-        val drawColor = array.getColor(R.styleable.RotatingAngularView_stripesColor, Color.WHITE)
+        drawColor = array.getColor(R.styleable.RotatingAngularView_stripesColor, drawColor)
         animationDuration = array.getInt(R.styleable.RotatingAngularView_animationDuration, 1000)
+        autoplay = array.getBoolean(R.styleable.RotatingAngularView_autoplay, true)
         array.recycle()
 
         stripePaint.color = drawColor
+
+        if (autoplay) {
+            post {
+                startAnimation()
+            }
+        }
     }
+
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         center.x = w / 2.0f
-        center.y = centerYOffset * h
+        center.y = yOffset * h
         drawRadius = center.distance(PointF(w.toFloat(), h.toFloat()))
     }
 
@@ -92,5 +101,10 @@ class RotatingAngularView @JvmOverloads constructor(
         valueAnimator?.interpolator = LinearInterpolator()
 
         valueAnimator?.start()
+    }
+
+    fun stopAnimation() {
+        valueAnimator?.cancel()
+        valueAnimator = null
     }
 }

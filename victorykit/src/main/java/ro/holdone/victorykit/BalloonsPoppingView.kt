@@ -10,12 +10,15 @@ import android.widget.ImageView
 import kotlin.math.cos
 import kotlin.random.Random
 
-class BaloonsPoppingView @JvmOverloads constructor(
+class BalloonsPoppingView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    var minSize = 60.0
-    var maxSize = 120.0
+    var minSize = 60
+    var maxSize = 120
+    var autoplay = false
+    var loopPlayback = true
+    var maxJiggle = 10
 
     val baloons = intArrayOf(
         R.drawable.ic_balloon_1,
@@ -27,20 +30,33 @@ class BaloonsPoppingView @JvmOverloads constructor(
         R.drawable.ic_balloon_7
     )
 
-    private var baloonsBag: MutableList<ImageView> = mutableListOf()
+    private var balloonsBag: MutableList<ImageView> = mutableListOf()
 
     init {
-        // Load baloons
+        val array = context.obtainStyledAttributes(attrs, R.styleable.BalloonsPoppingView, 0, 0)
+        minSize = array.getDimensionPixelSize(R.styleable.BalloonsPoppingView_minBalloonSize, minSize)
+        maxSize = array.getDimensionPixelSize(R.styleable.BalloonsPoppingView_maxBalloonSize, maxSize)
 
+        autoplay = array.getBoolean(R.styleable.BalloonsPoppingView_minBalloonSize, true)
+        loopPlayback = array.getBoolean(R.styleable.BalloonsPoppingView_loopPlayback, true)
+        array.recycle()
+
+        if (autoplay) {
+            post {
+                startAnimation()
+            }
+        }
+
+        // Load baloons
         repeat(2) { _ ->
             baloons.forEach {
                 val imageView = ImageView(context)
                 imageView.setImageResource(it)
-                baloonsBag.add(imageView)
+                balloonsBag.add(imageView)
             }
         }
 
-        baloonsBag.forEach {
+        balloonsBag.forEach {
             addView(it, generateParams())
         }
 
@@ -50,13 +66,12 @@ class BaloonsPoppingView @JvmOverloads constructor(
     }
 
     private fun generateParams(): ViewGroup.LayoutParams {
-        val size = Random.nextDouble(minSize, maxSize)
-        val params = LayoutParams(size.toInt(), size.toInt())
-        return params
+        val size = Random.nextInt(minSize, maxSize)
+        return LayoutParams(size, size)
     }
 
     private fun startAnimation() {
-        baloonsBag.forEach {
+        balloonsBag.forEach {
             animateBalloon(it)
         }
     }
@@ -66,7 +81,7 @@ class BaloonsPoppingView @JvmOverloads constructor(
         val translation = Random.nextInt(width).toFloat()
         view.translationX = translation
         view.translationY = height.toFloat()
-        val jiggle = Random.nextInt(10)
+        val jiggle = Random.nextInt(maxJiggle)
 
         val animator = ValueAnimator.ofFloat(height.toFloat(), -view.height.toFloat())
         animator.addUpdateListener {
@@ -76,7 +91,7 @@ class BaloonsPoppingView @JvmOverloads constructor(
         animator.duration = Random.nextLong(2500, 4000)
         animator.startDelay = Random.nextLong(4000)
         animator.repeatMode = ValueAnimator.RESTART
-        animator.repeatCount = ValueAnimator.INFINITE
+        animator.repeatCount = if (loopPlayback)  ValueAnimator.INFINITE else 1
         animator.start()
     }
 }

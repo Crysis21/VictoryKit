@@ -5,6 +5,15 @@
         <attr name="stripesCount" format="integer" />
         <attr name="stripesColor" format="color" />
         <attr name="animationDuration" format="integer" />
+        <attr name="autoplay" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="BalloonsPoppingView">
+        <attr name="loopPlayback" format="boolean"/>
+        <attr name="minBalloonSize" format="dimension"/>
+        <attr name="maxBalloonSize" format="dimension"/>
+        <attr name="maxJitter" format="dimension"/>
+        <attr name="autoplay" format="boolean"/>
     </declare-styleable>
 
 </resources>
