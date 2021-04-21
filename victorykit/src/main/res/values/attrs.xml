@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="autoplay" format="boolean"/>
 
     <declare-styleable name="RotatingAngularView">
         <attr name="stripesCount" format="integer" />
         <attr name="stripesColor" format="color" />
         <attr name="animationDuration" format="integer" />
-        <attr name="autoplay" format="boolean"/>
+        <attr name="autoplay"/>
     </declare-styleable>
 
     <declare-styleable name="BalloonsPoppingView">
@@ -13,7 +14,7 @@
         <attr name="minBalloonSize" format="dimension"/>
         <attr name="maxBalloonSize" format="dimension"/>
         <attr name="maxJitter" format="dimension"/>
-        <attr name="autoplay" format="boolean"/>
+        <attr name="autoplay"/>
     </declare-styleable>
 
 </resources>

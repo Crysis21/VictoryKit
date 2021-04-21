@@ -34,8 +34,10 @@ class BalloonsPoppingView @JvmOverloads constructor(
 
     init {
         val array = context.obtainStyledAttributes(attrs, R.styleable.BalloonsPoppingView, 0, 0)
-        minSize = array.getDimensionPixelSize(R.styleable.BalloonsPoppingView_minBalloonSize, minSize)
-        maxSize = array.getDimensionPixelSize(R.styleable.BalloonsPoppingView_maxBalloonSize, maxSize)
+        minSize =
+            array.getDimensionPixelSize(R.styleable.BalloonsPoppingView_minBalloonSize, minSize)
+        maxSize =
+            array.getDimensionPixelSize(R.styleable.BalloonsPoppingView_maxBalloonSize, maxSize)
 
         autoplay = array.getBoolean(R.styleable.BalloonsPoppingView_minBalloonSize, true)
         loopPlayback = array.getBoolean(R.styleable.BalloonsPoppingView_loopPlayback, true)
@@ -91,7 +93,9 @@ class BalloonsPoppingView @JvmOverloads constructor(
         animator.duration = Random.nextLong(2500, 4000)
         animator.startDelay = Random.nextLong(4000)
         animator.repeatMode = ValueAnimator.RESTART
-        animator.repeatCount = if (loopPlayback)  ValueAnimator.INFINITE else 1
+        if (loopPlayback) {
+            animator.repeatCount = ValueAnimator.INFINITE
+        }
         animator.start()
     }
 }
